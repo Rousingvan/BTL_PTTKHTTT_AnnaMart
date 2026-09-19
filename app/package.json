@@ -1,0 +1,16 @@
+{
+  "name": "sieuthi-anna-revenue-module",
+  "version": "1.0.0",
+  "description": "Module Thống kê và Báo cáo Doanh thu - Hệ thống Quản lý Siêu thị Mini Anna (PTTKHTTT - PTIT)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "mysql2": "^3.11.5"
+  }
+}

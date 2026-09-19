@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống Kê & Báo Cáo Doanh Thu - Chuỗi Siêu Thị Mini Anna</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Menu -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>ANNA MART</h2>
+                    <span>Hệ Thống Siêu Thị Mini</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="menu-label">4 MODULE CHÍNH BTL</div>
+                <a href="index.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>1. Thống kê doanh thu</span>
+                </a>
+                <a href="inventory.html" class="nav-item">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>2. Kiểm kê tồn kho</span>
+                </a>
+                <a href="products.html" class="nav-item">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>3. Sản phẩm & Danh mục</span>
+                </a>
+                <a href="pos.html" class="nav-item">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span>4. Thanh toán tại quầy</span>
+                </a>
+                <div class="menu-label">HỆ THỐNG</div>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Nhân viên thu ngân</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Cấu hình hệ thống</span>
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar">QL</div>
+                <div class="user-info">
+                    <strong>Lê Hoàng Yến</strong>
+                    <small>Quản lý Chi nhánh</small>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1>Thống Kê & Báo Cáo Doanh Thu</h1>
+                    <p class="subtitle">Báo cáo tổng hợp số liệu kinh doanh và phân tích dòng tiền bán hàng</p>
+                </div>
+
+                <div class="header-actions">
+                    <button class="btn btn-export" id="btnExportExcel">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span>Xuất Báo Cáo Excel</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Filter Controls Bar -->
+            <section class="filter-card">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label><i class="fa-regular fa-calendar"></i> Khoảng thời gian:</label>
+                        <select id="selectQuickFilter" class="form-control">
+                            <option value="all">Tất cả thời gian</option>
+                            <option value="today">Hôm nay (18/09/2026)</option>
+                            <option value="last7days" selected>7 ngày gần đây</option>
+                            <option value="thisMonth">Tháng này (Tháng 9/2026)</option>
+                            <option value="custom">Tùy chọn khoảng ngày...</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group date-inputs" id="customDateRange">
+                        <div>
+                            <label>Từ ngày:</label>
+                            <input type="date" id="inputFromDate" class="form-control" value="2026-09-10">
+                        </div>
+                        <div>
+                            <label>Đến ngày:</label>
+                            <input type="date" id="inputToDate" class="form-control" value="2026-09-18">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label><i class="fa-solid fa-shop"></i> Chi nhánh:</label>
+                        <select id="selectStore" class="form-control">
+                            <option value="ALL">Tất cả các chi nhánh</option>
+                            <option value="1">Anna - Cầu Giấy (Trần Thái Tông)</option>
+                            <option value="2">Anna - Hà Đông (Quang Trung)</option>
+                            <option value="3">Anna - Hai Bà Trưng (Bạch Mai)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group filter-btn-wrap">
+                        <button class="btn btn-primary" id="btnApplyFilter">
+                            <i class="fa-solid fa-filter"></i> Lọc Dữ Liệu
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Metric KPI Cards -->
+            <section class="kpi-grid">
+                <div class="kpi-card primary">
+                    <div class="kpi-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="kpi-content">
+                        <span class="kpi-title">Tổng Doanh Thu</span>
+                        <h3 class="kpi-value" id="kpiTotalRevenue">0 đ</h3>
+                        <span class="kpi-badge positive"><i class="fa-solid fa-arrow-up"></i> Tăng trưởng ổn định</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card info">
+                    <div class="kpi-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <div class="kpi-content">
+                        <span class="kpi-title">Số Lượng Hóa Đơn</span>
+                        <h3 class="kpi-value" id="kpiOrderCount">0</h3>
+                        <span class="kpi-badge neutral">Đơn hoàn thành</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card success">
+                    <div class="kpi-icon"><i class="fa-solid fa-calculator"></i></div>
+                    <div class="kpi-content">
+                        <span class="kpi-title">Giá Trị Đơn Trung Bình (AOV)</span>
+                        <h3 class="kpi-value" id="kpiAOV">0 đ</h3>
+                        <span class="kpi-badge">Bình quân / Giỏ hàng</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card warning">
+                    <div class="kpi-icon"><i class="fa-solid fa-qrcode"></i></div>
+                    <div class="kpi-content">
+                        <span class="kpi-title">Chuyển Khoản / QR</span>
+                        <h3 class="kpi-value" id="kpiQRRevenue">0 đ</h3>
+                        <span class="kpi-badge">Thanh toán số tiện lợi</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-grid">
+                <!-- Line Chart: Revenue by date -->
+                <div class="chart-card card-lg">
+                    <div class="card-header">
+                        <div class="title-wrap">
+                            <h3><i class="fa-solid fa-chart-line"></i> Biến Động Doanh Thu Theo Ngày</h3>
+                            <p>Theo dõi xu hướng dòng tiền bán hàng theo chu kỳ</p>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Doughnut Chart: Revenue by Category -->
+                <div class="chart-card">
+                    <div class="card-header">
+                        <div class="title-wrap">
+                            <h3><i class="fa-solid fa-chart-pie"></i> Cơ Cấu Theo Danh Mục</h3>
+                            <p>Tỷ trọng doanh thu theo nhóm mặt hàng</p>
+                        </div>
+                    </div>
+                    <div class="chart-body doughnut-wrap">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Top Products & Payment Methods -->
+            <section class="charts-grid second-row">
+                <!-- Bar Chart: Top selling items -->
+                <div class="chart-card card-lg">
+                    <div class="card-header">
+                        <div class="title-wrap">
+                            <h3><i class="fa-solid fa-trophy"></i> Top Sản Phẩm Đem Lại Doanh Thu Cao Nhất</h3>
+                            <p>Mặt hàng bán chạy đóng góp lớn nhất vào tổng doanh thu</p>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="topProductsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Payment Methods Breakdown -->
+                <div class="chart-card">
+                    <div class="card-header">
+                        <div class="title-wrap">
+                            <h3><i class="fa-solid fa-credit-card"></i> Kênh Thanh Toán</h3>
+                            <p>Phân bổ doanh số theo hình thức trả tiền</p>
+                        </div>
+                    </div>
+                    <div class="payment-stats-list" id="paymentStatsList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Detailed Invoices Table -->
+            <section class="table-card">
+                <div class="card-header table-header">
+                    <div class="title-wrap">
+                        <h3><i class="fa-solid fa-list-check"></i> Chi Tiết Hóa Đơn Trong Kỳ Thống Kê</h3>
+                        <p>Danh sách các giao dịch thanh toán thành công phục vụ đối soát</p>
+                    </div>
+                    <div class="table-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="inputTableSearch" placeholder="Tìm theo mã HĐ, thu ngân...">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table" id="invoicesTable">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Mã Hóa Đơn</th>
+                                <th>Thời Gian Lập</th>
+                                <th>Chi Nhánh</th>
+                                <th>Thu Ngân</th>
+                                <th>Phương Thức</th>
+                                <th>Trạng Thái</th>
+                                <th class="text-right">Tổng Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesTableBody">
+                            <tr>
+                                <td colspan="8" class="text-center">Đang tải dữ liệu...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
